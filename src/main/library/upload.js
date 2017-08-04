@@ -6,8 +6,9 @@ import {
     getSign
 } from '../config/image-sign'
 
+let formData = getSign()
+
 export default function (filePath) {
-    let formData = getSign()
     formData.file = {
         value: fs.createReadStream(filePath),
         options: {
@@ -25,7 +26,7 @@ export default function (filePath) {
                 reject(err)
             } else {
                 if (body.result) {
-                    resolve(body.result)
+                    resolve(body.result.fullPath)
                 } else {
                     console.log('upload image error')
                     reject(body)
