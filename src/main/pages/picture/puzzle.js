@@ -22,6 +22,11 @@ ipcMain.on('UPLOAD_PUZZLE_PSD_FILE', (event, data) => {
             for (let index = 0; index < puzzlesData.length; index++) {
                 const value = puzzlesData[index]
 
+                event.sender.send('PUZZLE_PSD_FILE_PROCESS', {
+                    complete: index,
+                    total: puzzlesData.length
+                })
+
                 // thumb
                 const thumbTmpPath = path.join(appDataPath, `thumb-${index}.png`)
                 yield saveAsPng(tree.childrenAtPath(`${value.name}/thumb`)[0], thumbTmpPath)

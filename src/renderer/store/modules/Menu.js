@@ -13,11 +13,11 @@ const state = {
                 },
                 {
                     title: '影集模板生成',
-                    path: {name: 'index'}
+                    path: {name: 'picture-album'}
                 },
                 {
                     title: '表情包模板生成',
-                    path: {}
+                    path: {name: 'picture-album'}
                 }
             ]
         },

@@ -69,7 +69,9 @@
                         </el-menu-item>
                     </template>
                 </el-menu>
-                <router-view></router-view>
+                <div class="view-container">
+                    <router-view></router-view>
+                </div>
             </el-col>
         </el-row>
     </div>
@@ -124,5 +126,8 @@
         font-size: 12px;
         color: #48576a;
         text-align: center;
+    }
+    .view-container {
+        padding: 20px;
     }
 </style>

@@ -14,6 +14,11 @@ export default new Router({
             path: '/picture/puzzle',
             name: 'picture-puzzle',
             component: require('@/pages/picture/puzzle')
+        },
+        {
+            path: '/picture/album',
+            name: 'picture-album',
+            component: require('@/pages/picture/album')
         }
     ]
 })
