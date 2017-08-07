@@ -68,6 +68,8 @@
 </template>
 
 <script>
+    import { ipcRenderer } from 'electron'
+
     export default {
         data () {
             return {
@@ -81,6 +83,13 @@
         },
         mounted () {
 
+        },
+        methods: {
+            cutMusic () {
+                ipcRenderer.send('CUT_ALBUM_MUSIC', {
+                    filePath: ''
+                })
+            }
         }
     }
 </script>
