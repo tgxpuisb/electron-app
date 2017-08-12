@@ -5,7 +5,7 @@ import {
 } from 'electron'
 
 const state = {
-    path: null
+    path: {}
 }
 
 const mutations = {
