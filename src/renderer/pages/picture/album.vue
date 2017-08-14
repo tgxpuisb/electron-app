@@ -88,111 +88,62 @@
             </el-col>
         </el-row>
         <section class="album-preview-list">
-            <div class="album-preview-item">
+            <div class="album-preview-item" v-for="(slide, index) in album.slides">
                 <div class="album-preview-graph">
 
                 </div>
                 <ul class="album-preview-elements">
-                    <li class="album-preview-element">
+                    <li class="album-preview-element" v-for="(element, i) in slide.elements">
                         <el-card :body-style="{ padding: '0px' }">
                             <div class="album-preview-image">
-                                <img src="http://b0.hucdn.com/img/common/loading.gif">
+                                <img :src="element.url">
                             </div>
                             <div style="padding: 14px;">
-                                <p>好吃的汉堡</p>
+                                <p>元素图片</p>
                                 <div class="bottom clearfix">
-                                    <el-button type="text">操作按钮</el-button>
+                                    <el-button type="text" @click="willEditElement('elements', index, i)">编辑</el-button>
                                 </div>
                             </div>
                         </el-card>
                     </li>
-                    <li class="album-preview-element">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <div class="album-preview-image">
-                                <img src="http://b0.hucdn.com/img/common/loading.gif">
-                            </div>
-                            <div style="padding: 14px;">
-                                <p>好吃的汉堡</p>
-                                <div class="bottom clearfix">
-                                    <el-button type="text">操作按钮</el-button>
+                    <template v-for="(photo, i) in slide.photos">
+                        <li class="album-preview-element">
+                            <el-card :body-style="{ padding: '0px' }">
+                                <div class="album-preview-image">
+                                    <img :src="photo.url">
                                 </div>
-                            </div>
-                        </el-card>
-                    </li>
-                    <li class="album-preview-element">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <div class="album-preview-image">
-                                <img src="http://b0.hucdn.com/img/common/loading.gif">
-                            </div>
-                            <div style="padding: 14px;">
-                                <p>好吃的汉堡</p>
-                                <div class="bottom clearfix">
-                                    <el-button type="text">操作按钮</el-button>
+                                <div style="padding: 14px;">
+                                    <p>头像-{{ i + 1 }}</p>
+                                    <div class="bottom clearfix">
+                                        <el-button type="text" @click="willEditElement('photos', index, i)">编辑</el-button>
+                                    </div>
                                 </div>
-                            </div>
-                        </el-card>
-                    </li>
-                    <li class="album-preview-element">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <div class="album-preview-image">
-                                <img src="http://b0.hucdn.com/img/common/loading.gif">
-                            </div>
-                            <div style="padding: 14px;">
-                                <p>好吃的汉堡</p>
-                                <div class="bottom clearfix">
-                                    <el-button type="text">操作按钮</el-button>
+                            </el-card>
+                        </li>
+                        <li class="album-preview-element">
+                            <el-card :body-style="{ padding: '0px' }">
+                                <div class="album-preview-image">
+                                    <img :src="photo.mask">
                                 </div>
-                            </div>
-                        </el-card>
-                    </li>
-                    <li class="album-preview-element">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <div class="album-preview-image">
-                                <img src="http://b0.hucdn.com/img/common/loading.gif">
-                            </div>
-                            <div style="padding: 14px;">
-                                <p>好吃的汉堡</p>
-                                <div class="bottom clearfix">
-                                    <el-button type="text">操作按钮</el-button>
+                                <div style="padding: 14px;">
+                                    <p>头像蒙版-{{ i + 1 }}</p>
+                                    <div class="bottom clearfix">
+                                        <el-button type="text" @click="willEditElement('photos', index, i)">编辑</el-button>
+                                    </div>
                                 </div>
-                            </div>
-                        </el-card>
-                    </li>
-                    <li class="album-preview-element">
+                            </el-card>
+                        </li>
+                    </template>
+
+                    <li class="album-preview-element" v-for="(bg, i) in slide.bgs">
                         <el-card :body-style="{ padding: '0px' }">
                             <div class="album-preview-image">
-                                <img src="http://b0.hucdn.com/img/common/loading.gif">
+                                <img :src="bg.url">
                             </div>
                             <div style="padding: 14px;">
-                                <p>好吃的汉堡</p>
+                                <p>背景图</p>
                                 <div class="bottom clearfix">
-                                    <el-button type="text">操作按钮</el-button>
-                                </div>
-                            </div>
-                        </el-card>
-                    </li>
-                    <li class="album-preview-element">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <div class="album-preview-image">
-                                <img src="http://b0.hucdn.com/img/common/loading.gif">
-                            </div>
-                            <div style="padding: 14px;">
-                                <p>好吃的汉堡</p>
-                                <div class="bottom clearfix">
-                                    <el-button type="text">操作按钮</el-button>
-                                </div>
-                            </div>
-                        </el-card>
-                    </li>
-                    <li class="album-preview-element">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <div class="album-preview-image">
-                                <img src="http://b0.hucdn.com/img/common/loading.gif">
-                            </div>
-                            <div style="padding: 14px;">
-                                <p>好吃的汉堡</p>
-                                <div class="bottom clearfix">
-                                    <el-button type="text">操作按钮</el-button>
+                                    <el-button type="text" @click="willEditElement('bgs', index, i)">编辑</el-button>
                                 </div>
                             </div>
                         </el-card>
@@ -200,11 +151,119 @@
                 </ul>
             </div>
         </section>
+
+        <el-dialog title="修改配置" v-model="modalShow">
+            <el-form :model="modalData" @close="closeEditModal">
+                <template v-if="modalData.configType !== 'bgs'">
+                    <el-col :span="11">
+                        <el-form-item label="宽度" label-width="80px">
+                            <el-input-number v-model="modalData.w"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-form-item label="高度" label-width="80px">
+                            <el-input-number v-model="modalData.h"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-form-item label="距离左端距离(x)" label-width="80px">
+                            <el-input-number v-model="modalData.x"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-form-item label="距离顶部距离(y)" label-width="80px">
+                            <el-input-number v-model="modalData.y"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                </template>
+                <el-form-item label="层级" label-width="80px">
+                    <el-input-number v-model="modalData.z"></el-input-number>
+                </el-form-item>
+                <template v-if="modalData.configType === 'photos'">
+                    <el-row class="photos-edit-area">
+                        <el-col :span="24" class="photos-edit-area-notice">
+                            此区域内容请在开发指导下修改
+                        </el-col>
+                        <el-col :span="11">
+                            <el-form-item label="dx" label-width="80px">
+                                <el-input-number v-model="modalData.dx"></el-input-number>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="11">
+                            <el-form-item label="dy" label-width="80px">
+                                <el-input-number v-model="modalData.dy"></el-input-number>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="11">
+                            <el-form-item label="dw" label-width="80px">
+                                <el-input-number v-model="modalData.dw"></el-input-number>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="11">
+                            <el-form-item label="dh" label-width="80px">
+                                <el-input-number v-model="modalData.dh"></el-input-number>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </template>
+                <el-form-item label="图片链接" label-width="80px">
+                    <el-input v-model="modalData.url"></el-input>
+                </el-form-item>
+                <el-form-item label="图片蒙版链接" label-width="80px" v-if="modalData.mask">
+                    <el-input v-model="modalData.mask"></el-input>
+                </el-form-item>
+                <el-form-item label="是否使用动画" label-width="80px" v-if="modalData.configType !== 'bgs'">
+                    <el-switch v-model="modalData.ani"></el-switch>
+                </el-form-item>
+                <template v-if="modalData.ani">
+                    <el-form-item label="动画类型" label-width="80px">
+                        <el-select v-model="modalData.aniName" placeholder="请选择">
+                            <el-option label="测试" value="测试"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-col :span="11">
+                        <el-form-item label="动画执行时间(秒)" label-width="80px">
+                            <el-input-number v-model="modalData.duration" :max="5"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-form-item label="动画延迟(秒)" label-width="80px">
+                            <el-input-number v-model="modalData.delay" :max="5"></el-input-number>
+                        </el-form-item>
+                    </el-col>
+                </template>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="closeEditModal">取 消</el-button>
+                <el-button type="primary" @click="editElement">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import { ipcRenderer } from 'electron'
+
+    import mock from './mock'
+
+    const defaultModalData = {
+        configType: '',
+        w: 0,
+        h: 0,
+        x: 0,
+        y: 0,
+        z: 0,
+        ani: false,
+        aniName: '',
+        delay: 0,
+        duration: 0,
+        url: '',
+        mask: '',
+        dx: 0,
+        dy: 0,
+        dw: 0,
+        dh: 0
+    }
 
     export default {
         data () {
@@ -214,13 +273,19 @@
                     desc: ''
                 },
                 musicStart: '00:00',
-                musicEnd: '00:00'
+                musicEnd: '00:00',
+                album: mock,
+
+                modalData: defaultModalData,
+                modalShow: true
             }
         },
         mounted () {
+            console.log(this.album)
             ipcRenderer.on('ALBUM_PSD_FILE_COMPLETE', (event, data) => {
                 console.log('complete')
                 console.log(data)
+                console.log(JSON.stringify(data))
             })
         },
         methods: {
@@ -235,6 +300,62 @@
                 })
                 console.log('uploading')
                 return false
+            },
+
+            // 打开
+            openEditModal () {
+                this.modalShow = true
+            },
+
+            // 取消
+            closeEditModal () {
+                this.modalData = {
+                    ...defaultModalData
+                }
+                this.modalShow = false
+            },
+
+            // 即将修改
+            willEditElement (type, index, i) {
+                let config = this.album.slides[index][type][i]
+                if (config) {
+                    this.modalData.configType = type
+                    this.modalData.z = config.z
+                    this.modalData.url = config.url
+                    if (type !== 'bgs') {
+                        this.modalData.x = config.x
+                        this.modalData.y = config.y
+                        this.modalData.w = config.w
+                        this.modalData.h = config.h
+                    }
+
+                    if (type === 'photos') {
+                        this.modalData.dx = config.dx
+                        this.modalData.dy = config.dy
+                        this.modalData.dw = config.dw
+                        this.modalData.dh = config.dh
+                        this.modalData.mask = config.mask
+                    }
+
+
+                    if (config.ani) {
+                        this.modalData.ani = config.ani
+                        this.modalData.aniName = config.aniName
+                        this.modalData.delay = config.delay
+                        this.modalData.duration = config.duration
+                    }
+                }
+                this.openEditModal()
+            },
+
+            // 修改
+            editElement () {
+                this.closeEditModal()
+            },
+
+            // 生成数据
+            generateAlbumConfig () {
+
             }
         }
     }
@@ -264,20 +385,21 @@
         background: red;
     }
     .album-preview-elements {
-        padding: 24px 24px 0;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
         flex: 1;
+        flex-wrap: wrap;
+        padding: 24px 24px 0;
     }
     .album-preview-element {
         flex: 0 0 200px;
+        margin-right: 20px;
         padding-bottom: 24px;
     }
     .album-preview-image {
         position: relative;
         width: 200px;
         height: 200px;
+        background: #FAFAFA;
         img {
             position: absolute;
             top: 50%;
@@ -287,5 +409,16 @@
             max-height: 200px;
 
         }
+    }
+
+    .photos-edit-area {
+        margin-bottom: 24px;
+        border: 1px solid #FF4965;
+        padding-top: 24px;
+    }
+    .photos-edit-area-notice {
+        margin-bottom: 12px;
+        text-align: center;
+        font-size: 16px;
     }
 </style>
