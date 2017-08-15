@@ -1,5 +1,6 @@
 <template>
     <div class="picture-album">
+        <link rel="stylesheet" href="http://m.yuerbao.com/assets/libs/animate.css" type="text/css">
         <el-row class="album-base-container">
             <el-col :span="16">
                 <el-form
@@ -89,9 +90,8 @@
         </el-row>
         <section class="album-preview-list">
             <div class="album-preview-item" v-for="(slide, index) in album.slides">
-                <div class="album-preview-graph">
-
-                </div>
+                <album-preview class="album-preview-graph" :slide="slide">
+                </album-preview>
                 <ul class="album-preview-elements">
                     <li class="album-preview-element" v-for="(element, i) in slide.elements">
                         <el-card :body-style="{ padding: '0px' }">
@@ -242,6 +242,7 @@
 </template>
 
 <script>
+    import AlbumPreview from '../../components/AlbumPreview.vue'
     import { ipcRenderer } from 'electron'
 
     import mock from './mock'
@@ -277,18 +278,31 @@
                 album: mock,
 
                 modalData: defaultModalData,
-                modalShow: true
+                modalShow: false
             }
         },
         mounted () {
             console.log(this.album)
             ipcRenderer.on('ALBUM_PSD_FILE_COMPLETE', (event, data) => {
                 console.log('complete')
-                console.log(data)
-                console.log(JSON.stringify(data))
+                this.album = data
             })
+//            this.loadAnimateCSS()
         },
         methods: {
+            loadAnimateCSS () {
+                if (!document.querySelector('link.animate-css')) {
+                    let link = document.createElement('link')
+                    link.className = 'animate-css'
+                    link.rel = 'stylesheet'
+                    link.type = 'test/css'
+                    link.href = 'http://m.yuerbao.com/assets/libs/animate.css'
+                    document.head.appendChild(link)
+                    link.onerror = () => {
+                        console.log('load')
+                    }
+                }
+            },
             cutMusic () {
                 ipcRenderer.send('CUT_ALBUM_MUSIC', {
                     filePath: ''
@@ -357,6 +371,9 @@
             generateAlbumConfig () {
 
             }
+        },
+        components: {
+            AlbumPreview
         }
     }
 </script>
