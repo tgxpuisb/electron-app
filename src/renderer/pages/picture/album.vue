@@ -87,6 +87,7 @@
                     <div class="el-upload__tip" slot="tip">只能上传PSD符合规则的文件，且不超过50M</div>
                 </el-upload>
             </el-col>
+            <el-button type="primary" @click="generateAlbumConfig">生成数据</el-button>
         </el-row>
         <section class="album-preview-list">
             <div class="album-preview-item" v-for="(slide, index) in album.slides">
@@ -155,30 +156,34 @@
         <el-dialog title="修改配置" v-model="modalShow">
             <el-form :model="modalData" @close="closeEditModal">
                 <template v-if="modalData.configType !== 'bgs'">
-                    <el-col :span="11">
-                        <el-form-item label="宽度" label-width="80px">
-                            <el-input-number v-model="modalData.w"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="11">
-                        <el-form-item label="高度" label-width="80px">
-                            <el-input-number v-model="modalData.h"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="11">
-                        <el-form-item label="距离左端距离(x)" label-width="80px">
-                            <el-input-number v-model="modalData.x"></el-input-number>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="11">
-                        <el-form-item label="距离顶部距离(y)" label-width="80px">
-                            <el-input-number v-model="modalData.y"></el-input-number>
-                        </el-form-item>
-                    </el-col>
+                    <el-row>
+                        <el-col :span="11">
+                            <el-form-item label="宽度" label-width="80px">
+                                <el-input-number v-model="modalData.w" :max="750"></el-input-number>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="11">
+                            <el-form-item label="高度" label-width="80px">
+                                <el-input-number v-model="modalData.h" :max="1206"></el-input-number>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="11">
+                            <el-form-item label="距离左端距离(x)" label-width="80px">
+                                <el-input-number v-model="modalData.x" :max="750"></el-input-number>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="11">
+                            <el-form-item label="距离顶部距离(y)" label-width="80px">
+                                <el-input-number v-model="modalData.y" :max="1206"></el-input-number>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
                 </template>
+
                 <el-form-item label="层级" label-width="80px">
                     <el-input-number v-model="modalData.z"></el-input-number>
                 </el-form-item>
+
                 <template v-if="modalData.configType === 'photos'">
                     <el-row class="photos-edit-area">
                         <el-col :span="24" class="photos-edit-area-notice">
@@ -217,8 +222,9 @@
                 </el-form-item>
                 <template v-if="modalData.ani">
                     <el-form-item label="动画类型" label-width="80px">
-                        <el-select v-model="modalData.aniName" placeholder="请选择">
-                            <el-option label="测试" value="测试"></el-option>
+                        <el-select v-model="modalData.aniName" placeholder="请选择" filterable>
+                            <el-option label="无" value=""></el-option>
+                            <el-option v-for="(item,i) in options" :label="item" :value="item" :key="i"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-col :span="11">
@@ -238,6 +244,10 @@
                 <el-button type="primary" @click="editElement">确 定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="将数据复制给开发" v-model="dataModalShow">
+            <p style="word-wrap: break-word;">{{dataForCopy}}</p>
+        </el-dialog>
     </div>
 </template>
 
@@ -248,6 +258,8 @@
     import mock from './mock'
 
     const defaultModalData = {
+        index: 0,
+        i: 0,
         configType: '',
         w: 0,
         h: 0,
@@ -256,8 +268,8 @@
         z: 0,
         ani: false,
         aniName: '',
-        delay: 0,
-        duration: 0,
+        delay: '',
+        duration: '',
         url: '',
         mask: '',
         dx: 0,
@@ -265,6 +277,8 @@
         dw: 0,
         dh: 0
     }
+
+    const options = ['bounce','flash','pulse','rubberBand','shake','headShake','swing','tada','wobble','jello','bounceIn','bounceInDown','bounceInLeft','bounceInRight','bounceInUp','bounceOut','bounceOutDown','bounceOutLeft','bounceOutRight','bounceOutUp','fadeIn','fadeInDown','fadeInDownBig','fadeInLeft','fadeInLeftBig','fadeInRight','fadeInRightBig','fadeInUp','fadeInUpBig','fadeOut','fadeOutDown','fadeOutDownBig','fadeOutLeft','fadeOutLeftBig','fadeOutRight','fadeOutRightBig','fadeOutUp','fadeOutUpBig','flipInX','flipInY','flipOutX','flipOutY','lightSpeedIn','lightSpeedOut','rotateIn','rotateInDownLeft','rotateInDownRight','rotateInUpLeft','rotateInUpRight','rotateOut','rotateOutDownLeft','rotateOutDownRight','rotateOutUpLeft','rotateOutUpRight','hinge','rollIn','rollOut','zoomIn','zoomInDown','zoomInLeft','zoomInRight','zoomInUp','zoomOut','zoomOutDown','zoomOutLeft','zoomOutRight','zoomOutUp','slideInDown','slideInLeft','slideInRight','slideInUp','slideOutDown','slideOutLeft','slideOutRight','slideOutUp']
 
     export default {
         data () {
@@ -276,9 +290,13 @@
                 musicStart: '00:00',
                 musicEnd: '00:00',
                 album: mock,
+                options: options,
 
-                modalData: defaultModalData,
-                modalShow: false
+                modalData: JSON.parse(JSON.stringify(defaultModalData)),
+                modalShow: false,
+
+                dataModalShow: false,
+                dataForCopy: ''
             }
         },
         mounted () {
@@ -287,22 +305,8 @@
                 console.log('complete')
                 this.album = data
             })
-//            this.loadAnimateCSS()
         },
         methods: {
-            loadAnimateCSS () {
-                if (!document.querySelector('link.animate-css')) {
-                    let link = document.createElement('link')
-                    link.className = 'animate-css'
-                    link.rel = 'stylesheet'
-                    link.type = 'test/css'
-                    link.href = 'http://m.yuerbao.com/assets/libs/animate.css'
-                    document.head.appendChild(link)
-                    link.onerror = () => {
-                        console.log('load')
-                    }
-                }
-            },
             cutMusic () {
                 ipcRenderer.send('CUT_ALBUM_MUSIC', {
                     filePath: ''
@@ -323,9 +327,7 @@
 
             // 取消
             closeEditModal () {
-                this.modalData = {
-                    ...defaultModalData
-                }
+//                this.modalData = JSON.parse(JSON.stringify(defaultModalData))
                 this.modalShow = false
             },
 
@@ -333,6 +335,8 @@
             willEditElement (type, index, i) {
                 let config = this.album.slides[index][type][i]
                 if (config) {
+                    this.modalData.index = index
+                    this.modalData.i = i
                     this.modalData.configType = type
                     this.modalData.z = config.z
                     this.modalData.url = config.url
@@ -357,6 +361,8 @@
                         this.modalData.aniName = config.aniName
                         this.modalData.delay = config.delay
                         this.modalData.duration = config.duration
+                    } else {
+                        this.modalData.ani = false
                     }
                 }
                 this.openEditModal()
@@ -365,11 +371,65 @@
             // 修改
             editElement () {
                 this.closeEditModal()
+                let index = this.modalData.index
+                let i = this.modalData.i
+                let type = this.modalData.configType
+                let config = this.album.slides[index][type][i]
+
+                config.z = this.modalData.z
+                config.url = this.modalData.url
+
+                if (type !== 'bgs') {
+                    config.x = this.modalData.x
+                    config.y = this.modalData.y
+                    config.w = this.modalData.w
+                    config.h = this.modalData.h
+                }
+
+                if (type === 'photos') {
+                    config.dx = this.modalData.dx
+                    config.dy = this.modalData.dy
+                    config.dw = this.modalData.dw
+                    config.dh = this.modalData.dh
+                    config.mask = this.modalData.mask
+                }
+
+                config.ani = this.modalData.ani || void 0
+
+                if (this.modalData.ani) {
+                    config.aniName = this.modalData.aniName
+                    config.delay = this.modalData.delay
+                    config.duration = this.modalData.duration
+                } else {
+                    config.aniName = void 0
+                    config.delay = void 0
+                    config.duration = void 0
+                }
             },
 
             // 生成数据
             generateAlbumConfig () {
-
+                this.dataModalShow = true
+                let data = JSON.parse(JSON.stringify(this.album))
+                data.slides.forEach(v => {
+                    v.photos && v.photos.forEach(v => {
+                        if (!v.ani) {
+                            v.ani = void 0
+                            v.aniName = void 0
+                            v.delay = void 0
+                            v.duration = void 0
+                        }
+                    })
+                    v.elements && v.elements.forEach(v => {
+                        if (!v.ani) {
+                            v.ani = void 0
+                            v.aniName = void 0
+                            v.delay = void 0
+                            v.duration = void 0
+                        }
+                    })
+                })
+                this.dataForCopy = JSON.stringify(data)
             }
         },
         components: {

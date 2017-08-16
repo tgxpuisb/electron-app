@@ -166,10 +166,25 @@
                     }
                 })
                 this.$forceUpdate()
+                setTimeout(() => {
+                    this.resetAnimate()
+                }, 5000)
             },
 
             resetAnimate () {
-                
+                this.elements.forEach(v => {
+                    if (v.ani) {
+                        v.aniClass.animated = false
+                        v.aniClass[v.aniName] = false
+                    }
+                })
+                this.photos.forEach(v => {
+                    if (v.ani) {
+                        v.aniClass.animated = false
+                        v.aniClass[v.aniName] = false
+                    }
+                })
+                this.$forceUpdate()
             }
         }
     }

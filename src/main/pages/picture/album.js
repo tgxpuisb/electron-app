@@ -125,6 +125,7 @@ ipcMain.on('UPLOAD_ALBUM_PSD_FILE', (event, data) => {
                         })
                         break
                 }
+                console.log(url)
             }
             albumData.slides.push(slide)
         }
