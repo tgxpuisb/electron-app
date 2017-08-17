@@ -257,27 +257,6 @@
 
     import mock from './mock'
 
-    const defaultModalData = {
-        index: 0,
-        i: 0,
-        configType: '',
-        w: 0,
-        h: 0,
-        x: 0,
-        y: 0,
-        z: 0,
-        ani: false,
-        aniName: '',
-        delay: '',
-        duration: '',
-        url: '',
-        mask: '',
-        dx: 0,
-        dy: 0,
-        dw: 0,
-        dh: 0
-    }
-
     const options = ['bounce','flash','pulse','rubberBand','shake','headShake','swing','tada','wobble','jello','bounceIn','bounceInDown','bounceInLeft','bounceInRight','bounceInUp','bounceOut','bounceOutDown','bounceOutLeft','bounceOutRight','bounceOutUp','fadeIn','fadeInDown','fadeInDownBig','fadeInLeft','fadeInLeftBig','fadeInRight','fadeInRightBig','fadeInUp','fadeInUpBig','fadeOut','fadeOutDown','fadeOutDownBig','fadeOutLeft','fadeOutLeftBig','fadeOutRight','fadeOutRightBig','fadeOutUp','fadeOutUpBig','flipInX','flipInY','flipOutX','flipOutY','lightSpeedIn','lightSpeedOut','rotateIn','rotateInDownLeft','rotateInDownRight','rotateInUpLeft','rotateInUpRight','rotateOut','rotateOutDownLeft','rotateOutDownRight','rotateOutUpLeft','rotateOutUpRight','hinge','rollIn','rollOut','zoomIn','zoomInDown','zoomInLeft','zoomInRight','zoomInUp','zoomOut','zoomOutDown','zoomOutLeft','zoomOutRight','zoomOutUp','slideInDown','slideInLeft','slideInRight','slideInUp','slideOutDown','slideOutLeft','slideOutRight','slideOutUp']
 
     export default {
@@ -292,7 +271,26 @@
                 album: mock,
                 options: options,
 
-                modalData: JSON.parse(JSON.stringify(defaultModalData)),
+                modalData: {
+                    index: 0,
+                    i: 0,
+                    configType: '',
+                    w: 0,
+                    h: 0,
+                    x: 0,
+                    y: 0,
+                    z: 0,
+                    ani: false,
+                    aniName: '',
+                    delay: '',
+                    duration: '',
+                    url: '',
+                    mask: '',
+                    dx: 0,
+                    dy: 0,
+                    dw: 0,
+                    dh: 0
+                },
                 modalShow: false,
 
                 dataModalShow: false,
@@ -327,8 +325,29 @@
 
             // 取消
             closeEditModal () {
-//                this.modalData = JSON.parse(JSON.stringify(defaultModalData))
-                this.modalShow = false
+                this.$nextTick(() => {
+                    this.modalData = {
+                        index: 0,
+                        i: 0,
+                        configType: '',
+                        w: 0,
+                        h: 0,
+                        x: 0,
+                        y: 0,
+                        z: 0,
+                        ani: false,
+                        aniName: '',
+                        delay: '',
+                        duration: '',
+                        url: '',
+                        mask: '',
+                        dx: 0,
+                        dy: 0,
+                        dw: 0,
+                        dh: 0
+                    }
+                    this.modalShow = false
+                })
             },
 
             // 即将修改
