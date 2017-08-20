@@ -1,6 +1,6 @@
 <template>
     <div class="album-slide-item">
-        <el-button type="success" icon="picture" class="album-slide-refresh" @click="startAnimate"></el-button>
+        <el-button type="success" icon="picture" class="album-slide-refresh" @click="startAnimate">刷新动效</el-button>
 
         <div
             class="album-slide-bg"

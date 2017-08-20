@@ -11,3 +11,7 @@ npm-debug.log.*
 thumbs.db
 .idea
 !.gitkeep
+
+
+rsync.sh
+.rsync-exclude.list

@@ -15,6 +15,7 @@ import appPath from '../../library/app-path'
 
 const fs = require('fs')
 const path = require('path')
+const ftp = require('ftp')
 const co = require('co')
 const { ipcMain } = require('electron')
 
@@ -135,4 +136,16 @@ ipcMain.on('UPLOAD_ALBUM_PSD_FILE', (event, data) => {
         console.log(e)
         event.sender.send('ALBUM_PSD_FILE_ERROR', e)
     })
+})
+
+ipcMain.on('UPLOAD_ALBUM_HOLLOW_POSTER', (event, data) => {
+    upload(data.filePath)
+        .then(url => {
+            event.sender.send('UPLOAD_ALBUM_HOLLOW_POSTER_COMPLETE', {
+                url: url
+            })
+        })
+        .catch(e => {
+
+        })
 })

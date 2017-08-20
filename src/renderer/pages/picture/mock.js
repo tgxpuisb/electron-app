@@ -6,5 +6,4 @@
 "use strict"
 
 export default {
-    
 }

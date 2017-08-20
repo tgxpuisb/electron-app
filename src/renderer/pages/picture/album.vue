@@ -7,10 +7,9 @@
                         ref="main-form"
                         class="album-form"
                         label-width="100px"
-                        :model="mainConfig"
                 >
                     <el-form-item label="影集名称">
-                        <el-input v-model="mainConfig.albumName"></el-input>
+                        <el-input v-model="albumName"></el-input>
                     </el-form-item>
                     <el-form-item label="影集显示简介">
                         <el-input type="textarea" v-model="mainConfig.desc"></el-input>
@@ -31,16 +30,19 @@
                         <el-upload
                                 action=""
                                 class="upload-image"
+                                :before-upload="uploadHollowPoster"
                         >
                             <el-button size="small" type="primary">上传镂空头像封面</el-button>
                             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
-                        <img class="upload-image-preview" src="">
+                        <el-input placeholder="镂空封面色值" v-model="albumHollowPosterColor"></el-input>
+                        <img class="upload-image-preview" :src="albumHollowPoster">
                     </el-col>
                     <el-col :span="8">
                         <el-upload
                                 action=""
                                 class="upload-image"
+                                :before-upload="uploadMusic"
                         >
                             <el-button size="small" type="primary">选择音频</el-button>
                             <div slot="tip" class="el-upload__tip">只能上传mp3文件，上传音频会被压缩</div>
@@ -49,11 +51,7 @@
                                 placeholder="起始时间"
                                 v-model="musicStart"
                                 :editable="false"
-                                :picker-options="{
-                            start: '00:00',
-                            step: '00:01',
-                            end: '06:00'
-                        }"
+                                :picker-options="{start: '00:00', step: '00:01', end: '06:00'}"
                                 style="margin-bottom: 5px;"
                         >
                         </el-time-select>
@@ -61,14 +59,13 @@
                                 placeholder="结束时间"
                                 v-model="musicEnd"
                                 :editable="false"
-                                :picker-options="{
-                            start: '00:00',
-                            step: '00:01',
-                            end: '06:00'
-                        }"
+                                :picker-options="{start: '00:00', step: '00:01', end: '06:00'}"
                                 style="margin-bottom: 5px;"
                         >
                         </el-time-select>
+                        <div class="cut-album-music-button">
+                            <el-button size="small" type="success" @click="cutMusic">裁切音频</el-button>
+                        </div>
                         <el-input placeholder="音乐链接">
                             <template slot="prepend">http://</template>
                         </el-input>
@@ -266,8 +263,12 @@
                     albumName: '',
                     desc: ''
                 },
+                albumName: '',
+                albumHollowPoster: '',
+                albumHollowPosterColor: '',
                 musicStart: '00:00',
                 musicEnd: '00:00',
+                musicPath: '',
                 album: mock,
                 options: options,
 
@@ -303,18 +304,38 @@
                 console.log('complete')
                 this.album = data
             })
+
+            ipcRenderer.on('UPLOAD_ALBUM_HOLLOW_POSTER_COMPLETE', (event, data) => {
+                this.albumHollowPoster = data.url
+            })
         },
         methods: {
-            cutMusic () {
+            uploadMusic (file) {
+                /*
                 ipcRenderer.send('CUT_ALBUM_MUSIC', {
                     filePath: ''
                 })
+                */
+                this.musicPath = file.path
+                return false
             },
+            cutMusic () {
+
+            },
+            // 上传PSD
             uploadPSD (file) {
                 ipcRenderer.send('UPLOAD_ALBUM_PSD_FILE', {
                     filePath: file.path
                 })
                 console.log('uploading')
+                return false
+            },
+            // 上传镂空封面
+            uploadHollowPoster (file) {
+                ipcRenderer.send('UPLOAD_ALBUM_HOLLOW_POSTER', {
+                    filePath: file.path
+                })
+                console.log('UPLOAD_ALBUM_HOLLOW_POSTER')
                 return false
             },
 
@@ -448,6 +469,10 @@
                         }
                     })
                 })
+                data.post = data.post || {}
+                data.post.url = this.albumHollowPoster
+                data.name = this.albumName
+                data.post.color = this.albumHollowPosterColor
                 this.dataForCopy = JSON.stringify(data)
             }
         },
@@ -469,6 +494,7 @@
     }
     .upload-image-preview {
         max-height: 603px;
+        max-width: 100%;
     }
 
     .album-preview-item {
@@ -516,5 +542,9 @@
         margin-bottom: 12px;
         text-align: center;
         font-size: 16px;
+    }
+
+    .cut-album-music-button {
+        margin-bottom: 6px;
     }
 </style>
