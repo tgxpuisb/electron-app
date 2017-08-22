@@ -239,7 +239,7 @@
             position: absolute;
             left: 0;
             top: 0;
-            z-index: 9999;
+            z-index: 100;
         }
     }
 </style>

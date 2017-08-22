@@ -1,5 +1,8 @@
 <template>
-    <div class="picture-album">
+    <div class="picture-album"
+        v-loading.fullscreen="fullscreenLoading"
+        :element-loading-text="loadingText"
+    >
         <link rel="stylesheet" href="http://m.yuerbao.com/assets/libs/animate.css" type="text/css">
         <el-row class="album-base-container">
             <el-col :span="16">
@@ -243,7 +246,7 @@
         </el-dialog>
 
         <el-dialog title="将数据复制给开发" v-model="dataModalShow">
-            <p style="word-wrap: break-word;">{{dataForCopy}}</p>
+            <p style="word-wrap: break-word;">{{ dataForCopy }}</p>
         </el-dialog>
     </div>
 </template>
@@ -295,21 +298,48 @@
                 modalShow: false,
 
                 dataModalShow: false,
-                dataForCopy: ''
+                dataForCopy: '',
+
+                fullscreenLoading: false,
+                loadingText: '正在玩命切图中....'
             }
         },
         mounted () {
             console.log(this.album)
-            ipcRenderer.on('ALBUM_PSD_FILE_COMPLETE', (event, data) => {
-                console.log('complete')
-                this.album = data
-            })
-
-            ipcRenderer.on('UPLOAD_ALBUM_HOLLOW_POSTER_COMPLETE', (event, data) => {
-                this.albumHollowPoster = data.url
-            })
+            this.orderEvents()
         },
         methods: {
+            // 订阅事件们
+            orderEvents () {
+                // 切图完成,数据回传
+                ipcRenderer.on('ALBUM_PSD_FILE_COMPLETE', (event, data) => {
+                    console.log('complete')
+                    console.log(data)
+                    this.fullscreenLoading = false
+                    this.album = data
+                })
+
+                // 切图过程出现失败
+                ipcRenderer.on('ALBUM_PSD_FILE_ERROR', (event, data) => {
+
+                })
+
+                // 上传过程计算出总图片上传量
+                ipcRenderer.on('ALBUM_PSD_FILE_TOTAL_UPLOAD_IMAGES', (event, data) => {
+
+                })
+
+                // 上传过程中每张图片上传完成之后的回调
+                ipcRenderer.on('ALBUM_PSD_FILE_UPLOAD_ONE_IMAGE', (event, data) => {
+
+                })
+
+
+                // 上传封面图完成
+                ipcRenderer.on('UPLOAD_ALBUM_HOLLOW_POSTER_COMPLETE', (event, data) => {
+                    this.albumHollowPoster = data.url
+                })
+            },
             uploadMusic (file) {
                 /*
                 ipcRenderer.send('CUT_ALBUM_MUSIC', {
@@ -327,6 +357,7 @@
                 ipcRenderer.send('UPLOAD_ALBUM_PSD_FILE', {
                     filePath: file.path
                 })
+                this.fullscreenLoading = true
                 console.log('uploading')
                 return false
             },
