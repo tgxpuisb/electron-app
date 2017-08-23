@@ -69,7 +69,7 @@
                         <div class="cut-album-music-button">
                             <el-button size="small" type="success" @click="cutMusic">裁切音频</el-button>
                         </div>
-                        <el-input placeholder="音乐链接">
+                        <el-input placeholder="音乐链接" v-model="musicOnlinePath">
                             <template slot="prepend">http://</template>
                         </el-input>
                     </el-col>
@@ -271,7 +271,8 @@
                 albumHollowPosterColor: '',
                 musicStart: '00:00',
                 musicEnd: '00:00',
-                musicPath: '',
+                musicPath: '' || '/Users/liyizhi/Downloads/marry you.mp3',
+                musicOnlinePath: '',
                 album: mock,
                 options: options,
 
@@ -301,7 +302,7 @@
                 dataForCopy: '',
 
                 fullscreenLoading: false,
-                loadingText: '正在玩命切图中....'
+                loadingText: '正在玩命切图中...'
             }
         },
         mounted () {
@@ -321,23 +322,29 @@
 
                 // 切图过程出现失败
                 ipcRenderer.on('ALBUM_PSD_FILE_ERROR', (event, data) => {
-
-                })
-
-                // 上传过程计算出总图片上传量
-                ipcRenderer.on('ALBUM_PSD_FILE_TOTAL_UPLOAD_IMAGES', (event, data) => {
-
+                    this.fullscreenLoading = false
+                    this.$alert({
+                        title: '切图过程出错了',
+                        message: data.toString(),
+                        type: 'error'
+                    })
                 })
 
                 // 上传过程中每张图片上传完成之后的回调
                 ipcRenderer.on('ALBUM_PSD_FILE_UPLOAD_ONE_IMAGE', (event, data) => {
-
+                    this.loadingText = '正在玩命切图中,已上传' + data.hasUpload + '/' + data.total
                 })
 
 
                 // 上传封面图完成
                 ipcRenderer.on('UPLOAD_ALBUM_HOLLOW_POSTER_COMPLETE', (event, data) => {
                     this.albumHollowPoster = data.url
+                })
+
+                // 音乐切割完成
+                ipcRenderer.on('CUT_ALBUM_MUSIC_COMPLETE', (event, data) => {
+                    console.log(data.url)
+                    this.musicOnlinePath = data.url
                 })
             },
             uploadMusic (file) {
@@ -350,7 +357,18 @@
                 return false
             },
             cutMusic () {
-
+                if (this.musicPath) {
+                    ipcRenderer.send('CUT_ALBUM_MUSIC', {
+                        filePath: this.musicPath,
+                        musicStart: this.musicStart,
+                        musicEnd: this.musicEnd
+                    })
+                } else {
+                    this.$message({
+                        message: '请先上传音乐',
+                        type: 'warning'
+                    })
+                }
             },
             // 上传PSD
             uploadPSD (file) {
@@ -504,6 +522,7 @@
                 data.post.url = this.albumHollowPoster
                 data.name = this.albumName
                 data.post.color = this.albumHollowPosterColor
+                data.music = this.musicOnlinePath
                 this.dataForCopy = JSON.stringify(data)
             }
         },

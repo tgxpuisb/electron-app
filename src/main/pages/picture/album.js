@@ -10,18 +10,71 @@ import {
     saveAsPng
 } from '../../library/psd'
 import upload from '../../library/upload'
+import {
+    B0_HUCDN
+} from '../../config/ftp'
 
 import appPath from '../../library/app-path'
 
 const fs = require('fs')
 const path = require('path')
-const ftp = require('ftp')
+const spawn = require("child_process").spawn
+const chmodSync = require("fs").chmodSync
+const Client = require('ftp')
+const fileMd5 = require('md5-file')
 const co = require('co')
 const { ipcMain } = require('electron')
 
 const appData = appPath.appData
 
 ipcMain.on('CUT_ALBUM_MUSIC', (event, data) => {
+    console.log(data.filePath)
+
+    let binPath
+    if (process.platform !== 'darwin') {
+        binPath = path.join(process.cwd(), 'static/bin/ffmpeg.exe')
+    } else {
+        binPath = path.join(process.cwd(), 'static/bin/ffmpeg')
+    }
+    console.log(binPath)
+
+    chmodSync(binPath, 0x1ed)
+
+    // ffmpeg -i -acodec libmp3lame -b 32k -ss 00:00 -to 00:48 -y
+    const child = spawn(binPath, [
+        '-i',
+        data.filePath,
+        '-acodec',
+        'libmp3lame',
+        '-b',
+        '32k',
+        '-ss',
+        data.musicStart,
+        '-to',
+        data.musicEnd,
+        '-y',
+        path.join(appData, 'album.mp3')
+    ])
+    child.on('exit', code => {
+        if (code === 0) {
+            const hash = fileMd5.sync(path.join(appData, 'album.mp3'))
+            const ftp = new Client()
+            ftp.on('ready', () => {
+                ftp.put(path.join(appData, 'album.mp3'), 'yu' + `erbao/album/${hash}.mp3`, err => {
+                    if (err) {
+                        console.log(err)
+                    }
+                    ftp.end()
+                    event.sender.send('CUT_ALBUM_MUSIC_COMPLETE', {
+                        url: 'https://b0.hucdn.com/' + 'yu' + `erbao/album/${hash}.mp3`
+                    })
+                })
+            })
+            ftp.connect(B0_HUCDN)
+        } else {
+            console.log('error')
+        }
+    })
 
 })
 /*
@@ -114,6 +167,7 @@ ipcMain.on('UPLOAD_ALBUM_PSD_FILE', (event, data) => {
 
     // psd图层总张数
     const total = albumTree.descendants().filter(v => v.get('type') !== 'group').length
+    let hasUpload = 0 // 已经上传张数
 
     const groups = albumTree.children().filter(group => {
         return group.get('type') === 'group'
@@ -121,8 +175,13 @@ ipcMain.on('UPLOAD_ALBUM_PSD_FILE', (event, data) => {
     var albumData = {
         count: 0,
         post: null,
-        slides: null
+        slides: []
     }
+
+    event.sender.send('ALBUM_PSD_FILE_UPLOAD_ONE_IMAGE', {
+        total,
+        hasUpload
+    })
 
     co(function* () {
         // 我本来想写 yield groups.map(...return yeild group.children().map(....)..) 后来想想算了,代码是写给人看的,慢就慢点吧
@@ -221,8 +280,8 @@ ipcMain.on('UPLOAD_ALBUM_PSD_FILE', (event, data) => {
             dy: firstPhoto.y / 2,
             color: ''
         }
-        */
 
+        */
 
         for (let i = 0; i < groups.length; i++) {
             let slide = {
@@ -313,6 +372,15 @@ ipcMain.on('UPLOAD_ALBUM_PSD_FILE', (event, data) => {
                         break
                 }
                 console.log(url)
+                if (name === 'photo') {
+                    hasUpload += 2
+                } else {
+                    hasUpload++
+                }
+                event.sender.send('ALBUM_PSD_FILE_UPLOAD_ONE_IMAGE', {
+                    total,
+                    hasUpload
+                })
             }
             albumData.slides.push(slide)
         }
