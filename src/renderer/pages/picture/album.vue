@@ -41,14 +41,17 @@
                         <el-input placeholder="镂空封面色值" v-model="albumHollowPosterColor"></el-input>
                         <img class="upload-image-preview" :src="albumHollowPoster">
                     </el-col>
-                    <el-col :span="8">
+                    <el-col :span="8" v-loading="musicUploading" element-loading-text="音频截图上传中">
                         <el-upload
                                 action=""
                                 class="upload-image"
                                 :before-upload="uploadMusic"
                         >
                             <el-button size="small" type="primary">选择音频</el-button>
-                            <div slot="tip" class="el-upload__tip">只能上传mp3文件，上传音频会被压缩</div>
+                            <div slot="tip" class="el-upload__tip">
+                                只能上传mp3文件，上传音频会被压缩<br/>
+                                当前上传文件地址：{{ musicPath }}
+                            </div>
                         </el-upload>
                         <el-time-select
                                 placeholder="起始时间"
@@ -271,7 +274,7 @@
                 albumHollowPosterColor: '',
                 musicStart: '00:00',
                 musicEnd: '00:00',
-                musicPath: '' || '/Users/liyizhi/Downloads/marry you.mp3',
+                musicPath: '',
                 musicOnlinePath: '',
                 album: mock,
                 options: options,
@@ -302,7 +305,9 @@
                 dataForCopy: '',
 
                 fullscreenLoading: false,
-                loadingText: '正在玩命切图中...'
+                loadingText: '正在玩命切图中...',
+
+                musicUploading: false
             }
         },
         mounted () {
@@ -343,21 +348,29 @@
 
                 // 音乐切割完成
                 ipcRenderer.on('CUT_ALBUM_MUSIC_COMPLETE', (event, data) => {
+                    this.musicUploading = false
                     console.log(data.url)
                     this.musicOnlinePath = data.url
                 })
+
+                // 音乐切割失败
+                ipcRenderer.on('CUT_ALBUM_MUSIC_FAIL', () => {
+                    this.musicUploading = false
+                    this.$alert({
+                        title: '音乐切割过程出错了',
+                        message: '我能怎么办，我也很绝望呀',
+                        type: 'error'
+                    })
+                })
             },
             uploadMusic (file) {
-                /*
-                ipcRenderer.send('CUT_ALBUM_MUSIC', {
-                    filePath: ''
-                })
-                */
                 this.musicPath = file.path
+                console.log(this.musicPath)
                 return false
             },
             cutMusic () {
                 if (this.musicPath) {
+                    this.musicUploading = true
                     ipcRenderer.send('CUT_ALBUM_MUSIC', {
                         filePath: this.musicPath,
                         musicStart: this.musicStart,

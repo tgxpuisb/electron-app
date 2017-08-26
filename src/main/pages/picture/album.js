@@ -66,12 +66,15 @@ ipcMain.on('CUT_ALBUM_MUSIC', (event, data) => {
                     }
                     ftp.end()
                     event.sender.send('CUT_ALBUM_MUSIC_COMPLETE', {
-                        url: 'https://b0.hucdn.com/' + 'yu' + `erbao/album/${hash}.mp3`
+                        url: 'https://b0.hu' + 'cdn.com/' + 'yu' + `erbao/album/${hash}.mp3`
                     })
                 })
             })
             ftp.connect(B0_HUCDN)
         } else {
+            event.sender.send('CUT_ALBUM_MUSIC_FAIL', {
+
+            })
             console.log('error')
         }
     })
@@ -339,6 +342,14 @@ ipcMain.on('UPLOAD_ALBUM_PSD_FILE', (event, data) => {
                         maskPath = path.join(appData, `${i}-mask-${i}.png`)
                         yield saveAsPng(element.childrenAtPath('mask')[0], maskPath)
                         mask = yield upload(maskPath)
+
+                        // 对于photo 默认ani开启 且为fadeIn
+
+                        el.ani = true
+                        el.aniName = 'fadeIn'
+                        el.delay = 0
+                        el.duration = 1
+
                         slide.photos.push({
                             ...bg,
                             ...el,
