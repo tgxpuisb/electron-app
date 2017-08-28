@@ -32,9 +32,9 @@ ipcMain.on('CUT_ALBUM_MUSIC', (event, data) => {
 
     let binPath
     if (process.platform !== 'darwin') {
-        binPath = path.join(process.cwd(), 'static/bin/ffmpeg.exe')
+        binPath = path.join(__static, 'bin/ffmpeg.exe')
     } else {
-        binPath = path.join(process.cwd(), 'static/bin/ffmpeg')
+        binPath = path.join(__static, 'bin/ffmpeg')
     }
     console.log(binPath)
 
