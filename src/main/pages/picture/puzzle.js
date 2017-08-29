@@ -10,6 +10,8 @@ const appDataPath = app.getPath('appData')
 
 ipcMain.on('UPLOAD_PUZZLE_PSD_FILE', (event, data) => {
 
+    event.sender.send('PUZZLE_PSD_FILE_START', {})
+
     co(function* () {
         try {
             const tree = getPSDTree(data.filePath)
@@ -46,9 +48,11 @@ ipcMain.on('UPLOAD_PUZZLE_PSD_FILE', (event, data) => {
                     return {bottom, left, top, right}
                 })
 
+                console.log(background)
+
                 puzzles.push({
-                    thumb,
-                    background,
+                    thumb_image: thumb,
+                    background_image: background,
                     pieces,
                     pic_count: pieces.length,
                     width: value.width,
@@ -60,7 +64,7 @@ ipcMain.on('UPLOAD_PUZZLE_PSD_FILE', (event, data) => {
 
         } catch (err) {
             console.log(err)
-            event.sender.send('ERROR', err)
+            event.sender.send('PUZZLE_PSD_FILE_ERROR', err)
         }
     })
 })
