@@ -330,7 +330,7 @@
                     this.fullscreenLoading = false
                     this.$alert({
                         title: '切图过程出错了',
-                        message: data.toString(),
+                        message: JSON.stringify(data),
                         type: 'error'
                     })
                 })

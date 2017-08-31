@@ -48,7 +48,7 @@
                 this.fullscreenLoading = false
                 this.$alert({
                     title: '切图过程出错了,其实我也不想的,如果连续几次都出错请联系开发',
-                    message: data.toString(),
+                    message: JSON.stringify(data, undefined, 4),
                     type: 'error'
                 })
             })
