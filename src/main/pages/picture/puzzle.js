@@ -50,8 +50,8 @@ ipcMain.on('UPLOAD_PUZZLE_PSD_FILE', (event, data) => {
                 })
 
                 puzzles.push({
-                    thumb_image: thumb,
-                    background_image: background,
+                    thumb_img: thumb,
+                    background_img: background,
                     pieces,
                     pic_count: pieces.length,
                     width: value.width,
