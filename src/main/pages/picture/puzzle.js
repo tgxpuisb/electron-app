@@ -16,7 +16,6 @@ ipcMain.on('UPLOAD_PUZZLE_PSD_FILE', (event, data) => {
         try {
             const tree = getPSDTree(data.filePath)
             const treeData = tree.export()
-            console.log(treeData)
             let puzzles = []
             const puzzlesData = treeData.children.filter(v => {
                 return v.type === 'group'
