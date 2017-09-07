@@ -33,6 +33,10 @@ function initLoginWindow () {
     })
 }
 
+export function logout () {
+    cookieString = ''
+}
+
 export function isLogin () {
     return !!cookieString
 }

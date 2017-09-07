@@ -1,6 +1,10 @@
 "use strict"
+import {
+    ipcRenderer
+} from 'electron'
+
 const state = {
-    userName: 'yizhi.li',
+    userName: '未登录',
     userAvatar: 'http://h0.hucdn.com/open/201724/21d777a959c51877_225x225.png',
     menus: [
         {
@@ -60,7 +64,16 @@ const mutations = {
 }
 
 const actions = {
+    login ({ commit }) {
+        ipcRenderer.once('APP_LOGIN_SUCCESS', (event, data) => {
+            //commit('SET_USERNAME', data.userName)
+            //commit('SET_USER_AVATAR', data.userAvatar)
+        })
+        ipcRenderer.once('APP_LOGIN_FAIL', (event, data) => {
 
+        })
+        ipcRenderer.send('APP_LOGIN')
+    }
 }
 
 export default {
