@@ -2,7 +2,7 @@
     <div id="app">
         <el-row>
             <el-col :span="4">
-                <div class="menu-header">
+                <div class="menu-header" @click="login">
                     <img class="menu-avatar" :src="userAvatar"/>
                     <div class="menu-username">{{ userName }}</div>
                     <div class="menu-slogan">think big, keep shipping</div>
@@ -92,7 +92,10 @@
         methods: {
             ...mapActions('App', [
                 'getAppPath'
-            ])
+            ]),
+            login () {
+                
+            }
         }
     }
 </script>
