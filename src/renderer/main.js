@@ -7,6 +7,7 @@ import store from './store'
 import ElementUI from 'element-ui'
 import 'normalize.css/normalize.css'
 import 'element-ui/lib/theme-default/index.css'
+import './assets/font-awesome.css'
 Vue.use(ElementUI)
 if (!process.env.IS_WEB) {
     Vue.use(require('vue-electron'))

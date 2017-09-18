@@ -22,6 +22,12 @@ const state = {
                 {
                     title: '表情包模板生成',
                     path: {name: 'picture-album'}
+                },
+                {
+                    title: '贝贝小程序影集生成',
+                    path: {
+                        name: 'picture-bbalbum'
+                    }
                 }
             ]
         },
@@ -36,12 +42,12 @@ const state = {
             path: '#'
         },
         {
-            title: '施工中',
-            icon: 'el-icon-message',
+            title: '小工具',
+            icon: 'fa fa-wrench',
             sub: [
                 {
-                    title: '施工中',
-                    icon: 'el-icon-message',
+                    title: '音乐上传',
+                    icon: 'fa fa-music',
                     path: '#'
                 },
                 {

@@ -19,6 +19,11 @@ export default new Router({
             path: '/picture/album',
             name: 'picture-album',
             component: require('@/pages/picture/album')
+        },
+        {
+            path: '/picture/bbalbum',
+            name: 'picture-bbalbum',
+            component: require('@/pages/picture/bbalbum')
         }
     ]
 })
