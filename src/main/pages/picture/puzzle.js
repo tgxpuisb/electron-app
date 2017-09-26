@@ -36,7 +36,7 @@ ipcMain.on('UPLOAD_PUZZLE_PSD_FILE', (event, data) => {
 
                 // cover(background)
                 const backgroundTmpPath = path.join(appDataPath, `background-${index}.png`)
-                yield saveAsPng(tree.childrenAtPath(`${value.name}/cover`)[0], backgroundTmpPath)
+                yield saveAsPng(tree.childrenAtPath(`${value.name}/background`)[0], backgroundTmpPath)
                 const background = yield upload(backgroundTmpPath)
 
                 const pieces = value.children[2].children.map(({
