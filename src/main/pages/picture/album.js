@@ -36,7 +36,6 @@ ipcMain.on('CUT_ALBUM_MUSIC', (event, data) => {
     } else {
         binPath = path.join(__static, 'bin/ffmpeg')
     }
-    console.log(binPath)
 
     chmodSync(binPath, 0x1ed)
 
