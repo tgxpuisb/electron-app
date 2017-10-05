@@ -32,8 +32,13 @@ const state = {
             ]
         },
         {
-            title: '施工中',
-            path: {}
+            title: '音乐相册',
+            sub: [
+                {
+                    title: '列表',
+                    path: {name: 'music_album-index'}
+                }
+            ]
         }
     ],
     nav: [

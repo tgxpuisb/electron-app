@@ -1,22 +1,11 @@
-# electron-app
+# notice
 
-> An electron-vue project
+this project will end commit at 2017/10/05
 
-#### Build Setup
+at first it's a project used to study electron and other information
 
-``` bash
-# install dependencies
-npm install
+but now, as it brings to then company the value of gradually increased
 
-# serve with hot reload at localhost:9080
-npm run dev
+It will involves a lot of sensitive information
 
-# build electron application for production
-npm run build
-
-
-```
-
----
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+so, I will suspend to commit to the github and instead of our company's gitlab

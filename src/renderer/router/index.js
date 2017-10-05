@@ -24,6 +24,11 @@ export default new Router({
             path: '/picture/bbalbum',
             name: 'picture-bbalbum',
             component: require('@/pages/picture/bbalbum')
+        },
+        {
+            path: '/music_album/index',
+            name: 'music_album-index',
+            component: require('@/pages/music_album/index')
         }
     ]
 })
